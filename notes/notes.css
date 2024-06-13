@@ -7,11 +7,11 @@
   font-family: 'Poppins', sans-serif;
 }
 body{
-  background: #88ABFF;
+  background: #022e57;
 }
 ::selection{
   color: #fff;
-  background: #618cf8;
+  background: #022e57;
 }
 .wrapper{
   margin: 50px;
@@ -45,7 +45,7 @@ body{
   font-size: 40px;
   border-radius: 50%;
   justify-content: center;
-  border: 2px dashed #88ABFF;
+  border: 2px dashed #022e57;
 }
 .add-box p{
   color: #88ABFF;
@@ -228,7 +228,7 @@ form button{
   cursor: pointer;
   font-size: 17px;
   border-radius: 4px;
-  background: #6A93F8;
+  background: #022e57;
 }
 
 @media (max-width: 660px){
@@ -248,4 +248,77 @@ form button{
 .note.dragging {
     opacity: 0.5;
   }
+  .deleted-wrapper {
+    display: none;
+    margin: 50px;
+  }
+  
+  .deleted-notes {
+    display: grid;
+    gap: 25px;
+    grid-template-columns: repeat(auto-fill, 265px);
+    list-style: none;
+    padding: 0;
+  }
+  
+  .deleted-notes li {
+    height: 250px;
+    border-radius: 5px;
+    padding: 15px 20px 20px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .deleted-notes .details {
+    max-height: 165px;
+    overflow-y: auto;
+  }
+  
+  .deleted-notes .details::-webkit-scrollbar {
+    width: 0;
+  }
+  
+  .deleted-notes .details:hover::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  .deleted-notes .details:hover::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 25px;
+  }
+  
+  .deleted-notes .details:hover::-webkit-scrollbar-thumb {
+    background: #e6e6e6;
+    border-radius: 25px;
+  }
+  
+  .deleted-notes p {
+    font-size: 22px;
+    font-weight: 500;
+  }
+  
+  .deleted-notes span {
+    display: block;
+    color: #575757;
+    font-size: 16px;
+    margin-top: 5px;
+  }
+  
+  .deleted-notes .bottom-content {
+    padding-top: 10px;
+    border-top: 1px solid #ccc;
+  }
+  
+  #toggleDeletedNotes {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  
   

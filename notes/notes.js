@@ -4,11 +4,14 @@ popupTitle = popupBox.querySelector("header p"),
 closeIcon = popupBox.querySelector("header i"),
 titleTag = popupBox.querySelector("input"),
 descTag = popupBox.querySelector("textarea"),
-addBtn = popupBox.querySelector("button");
+addBtn = popupBox.querySelector("button"),
+toggleDeletedNotesBtn = document.getElementById("toggleDeletedNotes"),
+deletedWrapper = document.querySelector(".deleted-wrapper");
 
 const months = ["January", "February", "March", "April", "May", "June", "July",
               "August", "September", "October", "November", "December"];
 const notes = JSON.parse(localStorage.getItem("notes") || "[]");
+const deletedNotes = JSON.parse(localStorage.getItem("deletedNotes") || "[]");
 let isUpdate = false, updateId, draggedElement;
 
 addBox.addEventListener("click", () => {
@@ -24,6 +27,16 @@ closeIcon.addEventListener("click", () => {
     titleTag.value = descTag.value = "";
     popupBox.classList.remove("show");
     document.querySelector("body").style.overflow = "auto";
+});
+
+toggleDeletedNotesBtn.addEventListener("click", () => {
+    if (deletedWrapper.style.display === "none" || deletedWrapper.style.display === "") {
+        deletedWrapper.style.display = "block";
+        toggleDeletedNotesBtn.innerText = "Hide Deleted Notes";
+    } else {
+        deletedWrapper.style.display = "none";
+        toggleDeletedNotesBtn.innerText = "Show Deleted Notes";
+    }
 });
 
 function showNotes() {
@@ -50,6 +63,7 @@ function showNotes() {
         addBox.insertAdjacentHTML("afterend", liTag);
     });
     enableDragAndDrop();
+    showDeletedNotes();
 }
 showNotes();
 
@@ -65,8 +79,10 @@ function showMenu(elem) {
 function deleteNote(noteId) {
     let confirmDel = confirm("Are you sure you want to delete this note?");
     if(!confirmDel) return;
-    notes.splice(noteId, 1);
+    let deletedNote = notes.splice(noteId, 1)[0];
+    deletedNotes.unshift(deletedNote); // Add deleted note to the beginning of the array
     localStorage.setItem("notes", JSON.stringify(notes));
+    localStorage.setItem("deletedNotes", JSON.stringify(deletedNotes));
     showNotes();
 }
 
@@ -107,7 +123,7 @@ addBtn.addEventListener("click", e => {
 
 function enableDragAndDrop() {
     const notesList = document.querySelectorAll(".note");
-    
+
     notesList.forEach(note => {
         note.addEventListener("dragstart", (e) => {
             draggedElement = note;
@@ -124,22 +140,34 @@ function enableDragAndDrop() {
                 draggedElement = null;
             }, 0);
         });
+    });
 
-        note.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            const afterElement = getDragAfterElement(note.parentNode, e.clientY);
-            const container = note.parentNode;
-            if (afterElement == null) {
-                container.appendChild(draggedElement);
-            } else {
-                container.insertBefore(draggedElement, afterElement);
-            }
-        });
+    const wrapper = document.querySelector(".wrapper");
+    wrapper.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(wrapper, e.clientY);
+        const draggable = document.querySelector(".dragging");
+        if (afterElement == null) {
+            wrapper.appendChild(draggable);
+        } else {
+            wrapper.insertBefore(draggable, afterElement);
+        }
+    });
+
+    wrapper.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(wrapper, e.clientY);
+        if (afterElement == null) {
+            wrapper.appendChild(draggedElement);
+        } else {
+            wrapper.insertBefore(draggedElement, afterElement);
+        }
+        updateNotesOrder();
     });
 }
 
 function getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll(".note:not(.dragging)")];
+    const draggableElements = [...container.querySelectorAll('.note:not(.dragging)')];
 
     return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
@@ -150,4 +178,32 @@ function getDragAfterElement(container, y) {
             return closest;
         }
     }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function updateNotesOrder() {
+    const notesList = document.querySelectorAll(".note");
+    const newOrder = Array.from(notesList).map(note => notes[note.getAttribute('data-id')]);
+    notes.length = 0;
+    notes.push(...newOrder);
+    localStorage.setItem("notes", JSON.stringify(notes));
+    showNotes();
+}
+
+function showDeletedNotes() {
+    const deletedNotesContainer = document.querySelector(".deleted-notes");
+    deletedNotesContainer.innerHTML = ""; // Clear existing notes
+
+    deletedNotes.forEach((note, id) => {
+        let filterDesc = note.description.replaceAll("\n", '<br/>');
+        let liTag = `<li class="note" data-id="${id}">
+                        <div class="details">
+                            <p>${note.title}</p>
+                            <span>${filterDesc}</span>
+                        </div>
+                        <div class="bottom-content">
+                            <span>${note.date}</span>
+                        </div>
+                    </li>`;
+        deletedNotesContainer.insertAdjacentHTML("beforeend", liTag);
+    });
 }
