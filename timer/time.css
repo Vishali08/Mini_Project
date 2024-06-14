@@ -1,0 +1,41 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-fluid {
+  text-align: center;
+  
+  width: 100%;
+  height: 30%;
+}
+
+.timer {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+.buttons {
+  margin-top: 20px;
+  
+  
+}
+
+button {
+  font-size: 1em;
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  width: 90px;
+  height: 50px;
+  margin-left: 1000px;
+}
+.corner-clock {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5em;
+  }
