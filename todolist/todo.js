@@ -11,9 +11,12 @@ function addTask() {
   } else if(taskText !== " "){
 
   const taskItem = document.createElement('li');
-  taskItem.textContent = taskText;
+  const taskTextElement = document.createElement('span');
+    taskTextElement.textContent = taskText;
+    taskItem.appendChild(taskTextElement);
 
   const delButton = document.createElement('button');
+  delButton.style.textAlign = "center";
   delButton.textContent = 'Delete';
   delButton.className = "btn btn-danger"
   delButton.addEventListener('click', function() {
@@ -22,13 +25,18 @@ function addTask() {
 
   const completeButton = document.createElement('button');
   completeButton.textContent = 'Complete';
+  completeButton.style.textAlign = "center";
+
   completeButton.className = "btn btn-success"
   completeButton.addEventListener('click', function() {
     taskItem.classList.toggle('completed');
   });
 
-  taskItem.appendChild(delButton);
-  taskItem.appendChild(completeButton);
+  const buttonContainer = document.createElement('div');
+  buttonContainer.appendChild(delButton);
+  buttonContainer.appendChild(completeButton);
+  taskItem.appendChild(buttonContainer);
+
   list.appendChild(taskItem);
 
   input.value = '';
