@@ -3,23 +3,26 @@ const add = document.getElementById('add');
 const list = document.getElementById('list');
 
 function addTask() {
+    console.log("Clicked")
   const taskText = input.value.trim();
   if (taskText === '') {
     alert('Please enter a task.');
     return;
-  }
+  } else if(taskText !== " "){
 
   const taskItem = document.createElement('li');
   taskItem.textContent = taskText;
 
   const delButton = document.createElement('button');
   delButton.textContent = 'Delete';
+  delButton.className = "btn btn-danger"
   delButton.addEventListener('click', function() {
     taskItem.remove();
   });
 
   const completeButton = document.createElement('button');
   completeButton.textContent = 'Complete';
+  completeButton.className = "btn btn-success"
   completeButton.addEventListener('click', function() {
     taskItem.classList.toggle('completed');
   });
@@ -29,6 +32,7 @@ function addTask() {
   list.appendChild(taskItem);
 
   input.value = '';
+}
 }
 
 // Event listener for adding a new task
